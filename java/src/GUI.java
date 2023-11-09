@@ -1,16 +1,52 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.sql.*;
 
 public class GUI implements ActionListener {
     public GUI() {
         JFrame frame = new JFrame();
-        frame.setSize(800,100);
+        frame.setSize(500,500);
+
+        JPanel menuPanel = new JPanel();
+        menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
+        JPanel menuPanel1 = new JPanel();
+        menuPanel1.setBorder(BorderFactory.createEmptyBorder(10,50,10,50));
+        menuPanel1.setLayout(new GridBagLayout());
+        JPanel menuPanel2 = new JPanel();
+        menuPanel2.setBorder(BorderFactory.createEmptyBorder(10,50,10,50));
+        menuPanel2.setLayout(new GridBagLayout());
+        JPanel menuPanel3 = new JPanel();
+        menuPanel3.setBorder(BorderFactory.createEmptyBorder(10,50,10,50));
+        menuPanel3.setLayout(new GridLayout(0,2));
+        menuPanel.add(menuPanel1);
+        menuPanel.add(menuPanel2);
+        menuPanel.add(menuPanel3);
+
+        JLabel title = new JLabel("Colibrarian Library Management System");
+        title.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+        menuPanel1.add(title);
+
+        try {
+            BufferedImage img = ImageIO.read(new File("java/src/booklogo.jpeg"));
+            Image bookLogo = img.getScaledInstance(100, 100, Image.SCALE_DEFAULT);
+            JLabel picLabel = new JLabel(new ImageIcon(bookLogo));
+            menuPanel2.add(picLabel);
+        }catch(IOException ex){
+            ex.printStackTrace();
+            System.out.println(ex);
+        }
+
+
+        JButton formButton = new JButton("Book Entry");
+        menuPanel3.add(formButton);
+        JButton searchButton = new JButton("Search Library");
+        menuPanel3.add(searchButton);
 
         JLabel label = new JLabel("Book ID");
         JTextField txt = new JTextField();
@@ -57,60 +93,139 @@ public class GUI implements ActionListener {
         JLabel label21 = new JLabel("Book Notes");
         JTextField txt21 = new JTextField();
 
-        JPanel panel = new JPanel();
-        JScrollPane scrollPane = new JScrollPane(panel);
+        JPanel panel2 = new JPanel();
+        JScrollPane scrollPane = new JScrollPane(panel2);
 
-        panel.setBorder(BorderFactory.createEmptyBorder(10,50,10,50));
-        panel.setLayout(new GridLayout(0,2));
-        panel.add(label);
-        panel.add(txt);
-        panel.add(label1);
-        panel.add(txt1);
-        panel.add(label2);
-        panel.add(txt2);
-        panel.add(label3);
-        panel.add(txt3);
-        panel.add(label4);
-        panel.add(txt4);
-        panel.add(label5);
-        panel.add(txt5);
-        panel.add(label6);
-        panel.add(txt6);
-        panel.add(label7);
-        panel.add(txt7);
-        panel.add(label8);
-        panel.add(txt8);
-        panel.add(label9);
-        panel.add(txt9);
-        panel.add(label10);
-        panel.add(txt10);
-        panel.add(label11);
-        panel.add(txt11);
-        panel.add(label12);
-        panel.add(txt12);
-        panel.add(label13);
-        panel.add(txt13);
-        panel.add(label14);
-        panel.add(txt14);
-        panel.add(label15);
-        panel.add(txt15);
-        panel.add(label16);
-        panel.add(txt16);
-        panel.add(label17);
-        panel.add(txt17);
-        panel.add(label18);
-        panel.add(txt18);
-        panel.add(label19);
-        panel.add(txt19);
-        panel.add(label20);
-        panel.add(txt20);
-        panel.add(label21);
-        panel.add(txt21);
+        panel2.setBorder(BorderFactory.createEmptyBorder(10,50,10,50));
+        panel2.setLayout(new GridLayout(0,2));
+        panel2.add(label);
+        panel2.add(txt);
+        panel2.add(label1);
+        panel2.add(txt1);
+        panel2.add(label2);
+        panel2.add(txt2);
+        panel2.add(label3);
+        panel2.add(txt3);
+        panel2.add(label4);
+        panel2.add(txt4);
+        panel2.add(label5);
+        panel2.add(txt5);
+        panel2.add(label6);
+        panel2.add(txt6);
+        panel2.add(label7);
+        panel2.add(txt7);
+        panel2.add(label8);
+        panel2.add(txt8);
+        panel2.add(label9);
+        panel2.add(txt9);
+        panel2.add(label10);
+        panel2.add(txt10);
+        panel2.add(label11);
+        panel2.add(txt11);
+        panel2.add(label12);
+        panel2.add(txt12);
+        panel2.add(label13);
+        panel2.add(txt13);
+        panel2.add(label14);
+        panel2.add(txt14);
+        panel2.add(label15);
+        panel2.add(txt15);
+        panel2.add(label16);
+        panel2.add(txt16);
+        panel2.add(label17);
+        panel2.add(txt17);
+        panel2.add(label18);
+        panel2.add(txt18);
+        panel2.add(label19);
+        panel2.add(txt19);
+        panel2.add(label20);
+        panel2.add(txt20);
+        panel2.add(label21);
+        panel2.add(txt21);
 
-        JButton button = new JButton("add");
-        panel.add(button);
+        JButton backButton = new JButton("back");
+        JButton addButton = new JButton("add");
+        panel2.add(backButton);
+        panel2.add(addButton);
 
-        button.addActionListener(e -> {
+        JPanel searchPanel = new JPanel();
+        searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.Y_AXIS));
+        JPanel panel3 = new JPanel();
+        panel3.setLayout(new GridLayout(0,3));
+        JLabel searchLabel = new JLabel("Search for Book");
+        JTextField searchBar = new JTextField();
+        JButton searchButton2 = new JButton("search");
+        panel3.add(searchLabel);
+        panel3.add(searchBar);
+        panel3.add(searchButton2);
+        JPanel panel4 = new JPanel();
+        JTextArea searchResults = new JTextArea(100,100);
+        searchResults.setEditable(true);
+        searchResults.setBackground(Color.WHITE);
+        panel4.add(searchResults);
+
+        searchPanel.add(panel3);
+        searchPanel.add(panel4);
+
+        formButton.addActionListener(e ->{
+            frame.setContentPane(scrollPane);
+            frame.invalidate();
+            frame.validate();
+            frame.setSize(800,800);
+        });
+
+        searchButton.addActionListener(e ->{
+            frame.setContentPane(searchPanel);
+            frame.invalidate();
+            frame.validate();
+            frame.setSize(500,500);
+        });
+
+        searchButton2.addActionListener(e ->{
+            String myUrl = "jdbc:mysql://localhost:3306/mysql";
+            String sql = "select * from colibrariandb.Books where book_title = ? or book_subject = ? or book_author = ? or " +
+                    "book_keywords = ? or book_publisher = ?";
+
+            try {
+                Connection conn = DriverManager.getConnection(myUrl, "root", "k4@@xCP/pLyM&\\m");
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setString(1, searchBar.getText());
+                preparedStatement.setString(2, searchBar.getText());
+                preparedStatement.setString(3, searchBar.getText());
+                preparedStatement.setString(4, searchBar.getText());
+                preparedStatement.setString(5, searchBar.getText());
+
+                ResultSet result = preparedStatement.executeQuery();
+                ResultSetMetaData rsmd = result.getMetaData();
+                int colNum = rsmd.getColumnCount();
+                String text = "";
+
+                while(result.next()){
+                    for(int i = 1; i <= colNum; i++){
+                        if(i > 1){
+                            text += result.getString(i) + " ";
+                            searchResults.append(text);
+                        }
+
+                    }
+                }
+
+                conn.close();
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                System.out.println(ex);
+            }
+        });
+
+        backButton.addActionListener(e ->{
+            frame.setContentPane(menuPanel);
+            frame.invalidate();
+            frame.validate();
+            frame.setSize(400,300);
+        });
+
+        addButton.addActionListener(e -> {
             String myUrl = "jdbc:mysql://localhost:3306/mysql";
             String sql = " insert into colibrariandb.Books(book_ID, book_author, book_title, book_othertitle, book_email," +
                     " book_language, book_series, book_subject, book_contentType, book_URL, book_placeOfPublication," +
@@ -149,13 +264,13 @@ public class GUI implements ActionListener {
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
-                System.out.println(e);
+                System.out.println(ex);
             }
 
 
         });
 
-        frame.add(scrollPane, BorderLayout.CENTER);
+        frame.add(menuPanel, BorderLayout.CENTER);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("Colibrarian");
         frame.pack();

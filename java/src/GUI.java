@@ -6,10 +6,13 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.sql.*;
 
 public class GUI implements ActionListener {
     public GUI() {
+
+        //initialization of GUI objects
         JFrame frame = new JFrame();
         frame.setSize(500,500);
 
@@ -158,15 +161,42 @@ public class GUI implements ActionListener {
         panel3.add(searchLabel);
         panel3.add(searchBar);
         panel3.add(searchButton2);
-        JPanel panel4 = new JPanel();
+        //JPanel panel4 = new JPanel();
         JTextArea searchResults = new JTextArea(100,100);
         searchResults.setEditable(true);
         searchResults.setBackground(Color.WHITE);
-        panel4.add(searchResults);
+        JScrollPane textPanel = new JScrollPane(searchResults);
+        //panel4.add(searchResults);
+        //JScrollPane scrollPane2 = new JScrollPane();
+        //scrollPane2.add(searchResults);
+        JPanel panel5 = new JPanel();
+        panel5.setLayout(new GridLayout(0,2));
+        JButton backButton2 = new JButton("back");
+        JButton jsonButton = new JButton("Populate JSON");
+        panel5.add(backButton2);
+        panel5.add(jsonButton);
 
         searchPanel.add(panel3);
-        searchPanel.add(panel4);
+        searchPanel.add(textPanel);
+        searchPanel.add(panel5);
 
+        //button action listeners
+
+        //button for returning to menu
+        backButton2.addActionListener(e ->{
+            frame.setContentPane(menuPanel);
+            frame.invalidate();
+            frame.validate();
+            frame.setSize(400,300);
+        });
+
+        //button for adding book data to json file
+        jsonButton.addActionListener(e ->{
+            populateJSON.saveToJSON();
+            JOptionPane.showMessageDialog(frame, "JSON file saved successfully!");
+        });
+
+        //button for navigating to book entry form
         formButton.addActionListener(e ->{
             frame.setContentPane(scrollPane);
             frame.invalidate();
@@ -174,6 +204,7 @@ public class GUI implements ActionListener {
             frame.setSize(800,800);
         });
 
+        //button for navigating to book search
         searchButton.addActionListener(e ->{
             frame.setContentPane(searchPanel);
             frame.invalidate();
@@ -181,33 +212,36 @@ public class GUI implements ActionListener {
             frame.setSize(500,500);
         });
 
+        //button for searching up book in the database
         searchButton2.addActionListener(e ->{
             String myUrl = "jdbc:mysql://localhost:3306/mysql";
-            String sql = "select * from colibrariandb.Books where book_title = ? or book_subject = ? or book_author = ? or " +
-                    "book_keywords = ? or book_publisher = ?";
+            String sql = "select * from colibrariandb.Books where book_title like ? or book_subject like ? or book_author like ? or " +
+                    "book_keywords like ? or book_publisher like ?";
 
             try {
                 Connection conn = DriverManager.getConnection(myUrl, "root", "k4@@xCP/pLyM&\\m");
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                preparedStatement.setString(1, searchBar.getText());
-                preparedStatement.setString(2, searchBar.getText());
-                preparedStatement.setString(3, searchBar.getText());
-                preparedStatement.setString(4, searchBar.getText());
-                preparedStatement.setString(5, searchBar.getText());
+                String searchText = searchBar.getText() + "%";
+                preparedStatement.setString(1, searchText);
+                preparedStatement.setString(2, searchText);
+                preparedStatement.setString(3, searchText);
+                preparedStatement.setString(4, searchText);
+                preparedStatement.setString(5, searchText);
 
                 ResultSet result = preparedStatement.executeQuery();
                 ResultSetMetaData rsmd = result.getMetaData();
                 int colNum = rsmd.getColumnCount();
                 String text = "";
+                searchResults.setText("");
 
                 while(result.next()){
                     for(int i = 1; i <= colNum; i++){
                         if(i > 1){
-                            text += result.getString(i) + " ";
-                            searchResults.append(text);
+                            text += result.getMetaData().getColumnName(i) + ": " + result.getString(i) + " \n";
                         }
 
                     }
+                    searchResults.append(text);
                 }
 
                 conn.close();
@@ -218,6 +252,7 @@ public class GUI implements ActionListener {
             }
         });
 
+        //button for returning to menu
         backButton.addActionListener(e ->{
             frame.setContentPane(menuPanel);
             frame.invalidate();
@@ -225,6 +260,7 @@ public class GUI implements ActionListener {
             frame.setSize(400,300);
         });
 
+        //button for adding new book to the database
         addButton.addActionListener(e -> {
             String myUrl = "jdbc:mysql://localhost:3306/mysql";
             String sql = " insert into colibrariandb.Books(book_ID, book_author, book_title, book_othertitle, book_email," +
@@ -250,7 +286,7 @@ public class GUI implements ActionListener {
                 preparedStatement.setString(12, txt11.getText());
                 preparedStatement.setInt(13, Integer.parseInt(txt12.getText()));
                 preparedStatement.setInt(14, Integer.parseInt(txt13.getText()));
-                preparedStatement.setInt(15, Integer.parseInt(txt14.getText()));
+                preparedStatement.setLong(15, Long.parseLong(txt14.getText()));
                 preparedStatement.setInt(16, Integer.parseInt(txt15.getText()));
                 preparedStatement.setString(17, txt16.getText());
                 preparedStatement.setString(18, txt17.getText());
